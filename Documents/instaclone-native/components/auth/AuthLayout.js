@@ -10,6 +10,14 @@ const Container = styled.View`
   padding: 0px 40px;
 `;
 
+const SafeAreaView = styled.SafeAreaView`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  padding: 0px 40px;
+`;
+
 const Logo = styled.Image`
   max-width: 50%;
   width: 100%;
@@ -23,13 +31,13 @@ export default function AuthLayout({ children }) {
   };
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={dismissKeyboard}>
-      <Container>
+      <SafeAreaView>
         <Logo
           resizeMode="contain"
           source={require("../../assets/instalogo.png")}
         />
         {children}
-      </Container>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }

@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import AuthLayout from "../components/auth/AuthLayout";
 import AuthButton from "../components/auth/AuthButton";
-import { KeyboardAvoidingView, Platform, TextInput } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { TextInput } from "../components/auth/AuthShared";
 
 export default function CreateAccount() {
   const lastNameRef = useRef();
@@ -19,6 +20,7 @@ export default function CreateAccount() {
   return (
     <AuthLayout>
       <KeyboardAvoidingView
+        disabled={Platform.OS === "ios" ? false : true}
         style={{ width: "100%" }}
         behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 30 : 0}
@@ -27,28 +29,28 @@ export default function CreateAccount() {
           autoFocus
           placeholder="First Name"
           returnKeyType="next"
-          style={{ backgroundColor: "white", width: "100%" }}
+          placeholderTextColor={"gray"}
           onSubmitEditing={() => onNext(lastNameRef)}
         />
         <TextInput
           ref={lastNameRef}
           placeholder="Last Name"
           returnKeyType="next"
-          style={{ backgroundColor: "white", width: "100%" }}
+          placeholderTextColor={"gray"}
           onSubmitEditing={() => onNext(usernameRef)}
         />
         <TextInput
           ref={usernameRef}
           placeholder="Username"
           returnKeyType="next"
-          style={{ backgroundColor: "white", width: "100%" }}
+          placeholderTextColor={"gray"}
           onSubmitEditing={() => onNext(emailRef)}
         />
         <TextInput
           ref={emailRef}
           placeholder="Email"
           returnKeyType="next"
-          style={{ backgroundColor: "white", width: "100%" }}
+          placeholderTextColor={"gray"}
           keyboardType="email-address"
           onSubmitEditing={() => onNext(passwordRef)}
         />
@@ -57,8 +59,9 @@ export default function CreateAccount() {
           placeholder="Password"
           secureTextEntry
           returnKeyType="done"
-          style={{ backgroundColor: "white", width: "100%" }}
+          placeholderTextColor={"gray"}
           onSubmitEditing={onDone}
+          lastOne={true}
         />
         <AuthButton
           text="Create Account"
