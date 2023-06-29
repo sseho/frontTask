@@ -6,6 +6,8 @@ import CreateAccount from "../screens/CreateAccount";
 import MyPage from "../screens/MyPage";
 import Follower from "../screens/Follower";
 import Following from "../screens/Following";
+import userInfo from "../dummy/userInfo.json";
+import { Image } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -14,6 +16,9 @@ export default function LoggedOutNav() {
     <Stack.Navigator
       screenOptions={{
         headerBackTitleVisible: false,
+        headerStyle: {
+          borderBottomWidth: 0,
+        },
       }}
     >
       <Stack.Screen
@@ -41,7 +46,20 @@ export default function LoggedOutNav() {
       />
       <Stack.Screen
         name="MyPage"
-        options={{ headerShown: true, title: "_hyogeun_" }}
+        options={{
+          headerShown: true,
+          headerBackVisible: false,
+          title: userInfo.name,
+          headerTitleAlign: "left",
+          headerLeft: null,
+          headerRight: () => (
+            <Image
+              source={require("../assets/alarm.png")}
+              style={{ width: 24, height: 24, marginRight: 15 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
         component={MyPage}
       />
       <Stack.Screen
