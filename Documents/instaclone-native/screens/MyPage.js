@@ -83,8 +83,7 @@ const TabText = styled.Text`
 
 const TabContent = styled.View`
   flex: 1;
-  justify-content: space-around;
-  margin-top: 20px;
+  width: 100%;
 `;
 
 const PathText = styled.Text`
@@ -106,6 +105,7 @@ const TravelSimpleInfo = styled.View`
   border: 1px;
   border-color: #d9d9d9;
   margin-bottom: 12px;
+  margin-left: 16px;
 `;
 
 const Title = styled.View`
@@ -158,6 +158,24 @@ const File = styled.Image`
   width: 24px;
   height: 24px;
   margin: 5px;
+`;
+
+const MapContainer = styled.View`
+  flex: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
+  margin-left: 7px;
+`;
+
+const Map = styled.View`
+  width: 170px;
+  height: 176px;
+  margin-left: 10px;
+  margin-bottom: 16px;
+  border: 1px;
+  border-radius: 5px;
 `;
 
 export default function MyPage({ navigation }) {
@@ -224,10 +242,6 @@ export default function MyPage({ navigation }) {
 
   return (
     <Container>
-      {/* <Header>
-        <PathText>{userInfo.name}</PathText>
-        <File resizeMode="contain" source={require("../assets/alarm.png")} />
-      </Header> */}
       <UserInfo>
         <ProfileHeader>
           <ProfilePicture source={{ uri: userInfo.profileImageUrl }} />
@@ -267,15 +281,21 @@ export default function MyPage({ navigation }) {
             keyExtractor={(item) => item.tripId}
             renderItem={renderItem}
           />
-          {/* {simplePost.map((post) => (
-            
-          ))} */}
         </TabContent>
       )}
       {activeTab === "Saved" && (
         <TabContent>
-          <SaveIcon />
-          <SaveIcon />
+          <MapContainer>
+            <Map>
+              <Text>map</Text>
+            </Map>
+            <Map>
+              <Text>map</Text>
+            </Map>
+            <Map>
+              <Text>map</Text>
+            </Map>
+          </MapContainer>
         </TabContent>
       )}
     </Container>
