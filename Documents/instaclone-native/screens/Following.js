@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import dummy from "../dummy/follow.json";
-import { FlatList, Image, Text } from "react-native";
+import { FlatList, Image, Text, TouchableOpacity } from "react-native";
+import axios from "axios";
 
 const Container = styled.View`
   flex: 1;
@@ -42,14 +43,37 @@ const ProfilePicture = styled.Image`
   background-color: gray;
 `;
 
-export default function Follower() {
+export default function Follower({ navigation, route }) {
   const [userList, setUserList] = useState(dummy.content);
   const [searchQuery, setSearchQuery] = useState("");
+  const userId = route.params.userId;
+  const goToMyPage = () => navigation.navigate("MyPage", { userId: userId });
+
+  let JWTToken =
+    "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgyNzM4NTEsImV4cCI6MTY4ODg3ODY1MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.zAI5H-a0GejTLlWRznR3_jrQ1Q0zVuXWQlBlwTBwOcNFA6BmqfK6-qx67F4cfzCTL395uYg2zQrUxjE3zCyl4Q";
 
   useEffect(() => {
     const infos = dummy.content || [];
     setUserList(infos);
   }, [dummy.content]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://3.37.189.80/follow/following/${userId}?page=0&size=10`,
+          { headers: { Authorization: `Bearer ${JWTToken}` } }
+        );
+        console.log(response.data);
+        setUserList(response.data.content);
+        // Perform necessary actions with the response data
+      } catch (error) {
+        console.error(error); // Error handling
+      }
+    };
+
+    fetchData();
+  }, [userId]);
 
   const performSearch = (query) => {
     const filteredList = dummy.content.filter((info) =>
@@ -60,12 +84,17 @@ export default function Follower() {
 
   const renderItem = ({ item: info }) => {
     return (
-      <FollowerItem key={info.userId}>
-        <ProfileHeader>
-          <ProfilePicture source={{ uri: info.profileImage }} />
-        </ProfileHeader>
-        <Text>{info.name}</Text>
-      </FollowerItem>
+      <TouchableOpacity
+        key={info.userId}
+        onPress={() => navigation.navigate("MyPage", { userId: info.userId })}
+      >
+        <FollowerItem>
+          <ProfileHeader>
+            <ProfilePicture source={{ uri: info.profileImage }} />
+          </ProfileHeader>
+          <Text>{info.name}</Text>
+        </FollowerItem>
+      </TouchableOpacity>
     );
   };
 
@@ -86,6 +115,7 @@ export default function Follower() {
           }}
         />
       </SearchContainer>
+
       <FlatList
         data={userList}
         keyExtractor={(item) => item.userId}

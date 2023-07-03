@@ -15,7 +15,9 @@ const LoginLink = styled.Text`
 export default function Welcome({ navigation }) {
   const goToCreateAccount = () => navigation.navigate("CreateAccount");
   const goToLogin = () => navigation.navigate("Login");
-  const goToMyPage = () => navigation.navigate("MyPage");
+  const goToMyPage = () => navigation.navigate("MyPage", { userId: "2" });
+  const goToStorage = () => navigation.navigate("Storage");
+
   return (
     <AuthLayout>
       <AuthButton
@@ -28,6 +30,9 @@ export default function Welcome({ navigation }) {
       </TouchableOpacity>
       <TouchableOpacity onPress={goToMyPage}>
         <LoginLink>MyPage</LoginLink>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={goToStorage}>
+        <LoginLink>Storage</LoginLink>
       </TouchableOpacity>
     </AuthLayout>
   );

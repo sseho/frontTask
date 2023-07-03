@@ -1,0 +1,17 @@
+{
+    "content": [
+        {"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 25}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 24}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 19}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 18}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 13}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 12}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 11}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 10}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 9}, 
+{"address": "서울특별시 영등포구", "createdDate": "2023-07-02", "locationInfoList": [Array], "title": "안녕하세요?", "tripId": 8}
+], 
+"hasNext": true, 
+"page": 0, 
+"size": 10
+}

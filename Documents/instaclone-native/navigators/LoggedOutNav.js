@@ -8,6 +8,7 @@ import Follower from "../screens/Follower";
 import Following from "../screens/Following";
 import userInfo from "../dummy/userInfo.json";
 import { Image } from "react-native";
+import Storage from "../screens/Storage";
 
 const Stack = createStackNavigator();
 
@@ -75,6 +76,13 @@ export default function LoggedOutNav() {
           title: "팔로잉",
         }}
         component={Following}
+      />
+      <Stack.Screen
+        name="Storage"
+        options={{
+          title: "저장한 지도",
+        }}
+        component={Storage}
       />
     </Stack.Navigator>
   );

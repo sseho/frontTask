@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
 import axios from "axios";
 import dummy from "../dummy/travalSimpleInfo.json";
 import dUserInfo from "../dummy/userInfo.json";
+import Maps from "../components/Maps";
 
 const Container = styled.View`
   flex: 1;
@@ -52,9 +53,20 @@ const ProfilePicture = styled.Image`
 `;
 
 const ProfileInfo = styled.View`
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
   height: 38px;
+`;
+
+const TextInput = styled.TextInput`
+  width: 364px;
+  height: 36px;
+  font-size: 16px;
+  padding: 5px;
+  margin-left: 12px;
+  background-color: #c8dbff;
+  border-radius: 5px;
 `;
 
 const Bio = styled.Text`
@@ -178,10 +190,17 @@ const Map = styled.View`
   border-radius: 5px;
 `;
 
-export default function MyPage({ navigation }) {
+export default function MyPage({ navigation, route }) {
   const [activeTab, setActiveTab] = useState("Path");
   const [simplePost, setSimplePost] = useState(dummy.content);
   const [userInfo, setUserInfo] = useState(dUserInfo);
+  const [bio, setBio] = useState(userInfo.description);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const userId = route.params.userId;
+
+  useEffect(() => {
+    console.log("userId changed:", userId);
+  }, [userId]);
 
   useEffect(() => {
     const posts = dummy.content || [];
@@ -197,17 +216,77 @@ export default function MyPage({ navigation }) {
     setActiveTab(tabName);
   };
 
-  // axios
-  //   .get("http://example.com/api/data")
-  //   .then((response) => {
-  //     // 받아온 데이터를 처리합니다.
-  //     const data = response.data;
-  //     console.log(data); // JSON 데이터 출력 예시
-  //   })
-  //   .catch((error) => {
-  //     // 에러 처리
-  //     console.error(error);
+  let JWTToken =
+    "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODgyNzM4NTEsImV4cCI6MTY4ODg3ODY1MSwic3ViIjoic2Vobzc4QGcuaG9uZ2lrLmFjLmtyIiwiVE9LRU5fVFlQRSI6IkFDQ0VTU19UT0tFTiJ9.zAI5H-a0GejTLlWRznR3_jrQ1Q0zVuXWQlBlwTBwOcNFA6BmqfK6-qx67F4cfzCTL395uYg2zQrUxjE3zCyl4Q";
+
+  //여행 간단 정보 조회
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://3.37.189.80/trip/user/${userId}?page=0&size=10`,
+          { headers: { Authorization: `Bearer ${JWTToken}` } }
+        );
+        console.log(response.data); // Server response data
+
+        setSimplePost(response.data.content);
+        // Perform necessary actions with the response data
+      } catch (error) {
+        console.error(error); // Error handling
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
+  //유저 페이지 정보 조회
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://3.37.189.80/user?userId=${userId}`,
+          { headers: { Authorization: `Bearer ${JWTToken}` } }
+        );
+
+        setUserInfo(response.data);
+        setBio(response.data.description);
+        navigation.setOptions({
+          title: response.data.name, // userId에 해당하는 사용자의 이름으로 헤더 타이틀을 설정
+        });
+        // Perform necessary actions with the response data
+      } catch (error) {
+        console.error(error); // Error handling
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
+  // useEffect(() => {
+  //   // navigation의 setOptions 메서드를 사용하여 헤더 타이틀을 업데이트
+  //   navigation.setOptions({
+  //     title: userInfo.name, // userId에 해당하는 사용자의 이름으로 헤더 타이틀을 설정
   //   });
+  // }, [userId]);
+
+  // 수정한 텍스트를 백엔드로 보내는 함수
+  const sendTextToBackend = async (text) => {
+    try {
+      const response = await axios.post("http://example.com/api/endpoint", {
+        text: text,
+      });
+      console.log(response.data); // 서버 응답 데이터
+      // 성공적으로 전송되었을 때 필요한 처리를 수행합니다.
+    } catch (error) {
+      console.error(error); // 오류 처리
+    }
+  };
+
+  const handleSaveButtonPress = () => {
+    // 수정한 텍스트를 백엔드로 보냅니다.
+    sendTextToBackend(bio);
+    console.log("보냄");
+  };
 
   const renderItem = ({ item: post }) => {
     return (
@@ -228,7 +307,7 @@ export default function MyPage({ navigation }) {
                   source={require("../assets/vector2.png")}
                 />
               )}
-              <Text key={index}>{location}</Text>
+              <Text key={index}>{location.placeName}</Text>
             </Location>
           ))}
         </LocationList>
@@ -247,18 +326,44 @@ export default function MyPage({ navigation }) {
           <ProfilePicture source={{ uri: userInfo.profileImageUrl }} />
         </ProfileHeader>
         <Follow>
-          <FollowItem onPress={() => navigation.navigate("Follower")}>
+          <FollowItem
+            onPress={() => navigation.navigate("Follower", { userId: userId })}
+          >
             <Text>팔로워</Text>
             <Text>{userInfo.followerCount}</Text>
           </FollowItem>
-          <FollowItem onPress={() => navigation.navigate("Following")}>
+          <FollowItem
+            onPress={() => navigation.navigate("Following", { userId: userId })}
+          >
             <Text>팔로잉</Text>
             <Text>{userInfo.followingCount}</Text>
           </FollowItem>
         </Follow>
       </UserInfo>
       <ProfileInfo>
-        <Bio>{userInfo.description}</Bio>
+        {isEditMode ? (
+          <TextInput
+            placeholder="자신을 소개하는 글을 작성해 보세요"
+            value={bio}
+            maxLength={20}
+            onChangeText={setBio}
+            onBlur={() => {
+              setIsEditMode(false);
+              handleSaveButtonPress();
+            }}
+            autoFocus
+          />
+        ) : (
+          <>
+            <Bio>#{bio}</Bio>
+            <TouchableOpacity onPress={() => setIsEditMode(true)}>
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={require("../assets/modify.png")}
+              />
+            </TouchableOpacity>
+          </>
+        )}
       </ProfileInfo>
       <TabContainer>
         <TabButton
@@ -287,13 +392,13 @@ export default function MyPage({ navigation }) {
         <TabContent>
           <MapContainer>
             <Map>
-              <Text>map</Text>
+              <Maps />
             </Map>
             <Map>
-              <Text>map</Text>
+              <Maps />
             </Map>
             <Map>
-              <Text>map</Text>
+              <Maps />
             </Map>
           </MapContainer>
         </TabContent>
