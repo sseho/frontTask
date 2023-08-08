@@ -25,6 +25,30 @@ export default function SearchPage() {
   const handleDeleteSearchKeyword = () => {
     setSearchKeyword(null);
   };
+  const recommendPress = (keyword) => {
+    setSearchKeyword(keyword);
+    handleRecommend(keyword);
+    setData((prev) => ({
+      ...prev,
+      input: keyword,
+    }));
+  };
+
+  // 추천검색어 클릭 함수
+  const handleRecommend = (keyword) => {
+    if (keyword.trim() !== "") {
+      // 새로운 검색어를 최근 검색어 리스트에 추가
+      const newSearch = { keyword: keyword, timestamp: Date.now() };
+      setRecentSearches((prevSearches) => {
+        const updatedSearches = [newSearch, ...prevSearches];
+        // 최대 30개까지만 저장
+        if (updatedSearches.length > 30) {
+          updatedSearches.splice(30);
+        }
+        return updatedSearches;
+      });
+    }
+  };
 
   // 검색 버튼 클릭을 처리하는 함수
   const handleSearch = () => {
@@ -69,7 +93,7 @@ export default function SearchPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchData = async () => {
+  const fetchRecommend = async () => {
     try {
       const response = await axios.get(
         `https://0x057hq0se.execute-api.ap-northeast-2.amazonaws.com/api/v1/search`,
@@ -86,7 +110,7 @@ export default function SearchPage() {
   };
   useEffect(() => {
     if (searchKeyword) {
-      fetchData();
+      fetchRecommend();
     }
   }, [data]);
 
@@ -110,13 +134,14 @@ export default function SearchPage() {
         <Recommend
           searchKeyword={searchKeyword}
           recommemdData={recommemdData}
+          recommendPress={recommendPress}
         />
       ) : (
         <RecentSearchContainer>
           <Title>최근 검색어</Title>
           <ItemContainer>
             {recentSearches.map((search, index) => (
-              <Item key={index}>
+              <Item key={index} onPress={() => recommendPress(search.keyword)}>
                 <ItemName>{search.keyword}</ItemName>
                 <ClearButton onPress={() => handleClearRecentSearch(index)}>
                   <ClearButtonText>X</ClearButtonText>
@@ -168,7 +193,7 @@ const ItemContainer = styled.View`
   flex-wrap: wrap;
   margin-top: 10px;
 `;
-const Item = styled.View`
+const Item = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   height: 24px;

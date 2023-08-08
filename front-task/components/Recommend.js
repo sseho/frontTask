@@ -2,11 +2,14 @@ import React from "react";
 import { Text } from "react-native";
 import styled from "styled-components/native";
 
-export default function Recommend({ searchKeyword, recommemdData }) {
+export default function Recommend({
+  searchKeyword,
+  recommemdData,
+  recommendPress,
+}) {
   const highlightMatchingChars = (keyword) => {
     const chars = keyword.split("");
     const searchChars = searchKeyword.split("");
-    // console.log("test : ", chars, searchChars);
     return chars.map((char, index) => {
       for (let i = 0; i < searchChars.length; i++) {
         if (char === searchChars[i]) {
@@ -17,12 +20,16 @@ export default function Recommend({ searchKeyword, recommemdData }) {
       return <React.Fragment key={index}>{char}</React.Fragment>;
     });
   };
+  const handleItem = (keyword) => {
+    recommendPress(keyword);
+    console.log("눌림", keyword);
+  };
   return (
     <Container>
       {recommemdData &&
         recommemdData.shops &&
         recommemdData.shops.slice(0, 3).map((data, id) => (
-          <Item key={id}>
+          <Item key={id} onPress={() => handleItem(data.keyword)}>
             <Wrapper>
               <Image source={{ uri: data.thumb_image }} />
               <Title>{highlightMatchingChars(data.keyword)}</Title>
@@ -33,7 +40,7 @@ export default function Recommend({ searchKeyword, recommemdData }) {
       {recommemdData &&
         recommemdData.hashtags &&
         recommemdData.hashtags.slice(0, 3).map((data, id) => (
-          <Item key={id}>
+          <Item key={id} onPress={() => handleItem(data.keyword)}>
             <Wrapper>
               <Title>{highlightMatchingChars(data.keyword)}</Title>
             </Wrapper>
