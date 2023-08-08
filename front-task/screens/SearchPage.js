@@ -35,8 +35,8 @@ export default function SearchPage() {
         const updatedSearches = [newSearch, ...prevSearches];
 
         // 최대 30개까지만 저장
-        if (updatedSearches.length > 3) {
-          updatedSearches.splice(3);
+        if (updatedSearches.length > 30) {
+          updatedSearches.splice(30);
         }
 
         return updatedSearches;
