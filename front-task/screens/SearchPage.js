@@ -27,14 +27,11 @@ export default function SearchPage() {
   const handleDeleteSearchKeyword = () => {
     setSearchKeyword(null);
     setResult(null);
+    setRecommendData(null);
   };
   const recommendPress = (keyword) => {
     setSearchKeyword(keyword);
     handleRecommend(keyword);
-    setData((prev) => ({
-      ...prev,
-      input: keyword,
-    }));
     fetchResult(keyword);
   };
 
