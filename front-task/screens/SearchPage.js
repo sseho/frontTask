@@ -6,12 +6,14 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { SearchAtom } from "../recoil/SearchAtom";
 import Recommend from "../components/Recommend";
+import Result from "../components/Result";
 
 export default function SearchPage() {
   const [searchKeyword, setSearchKeyword] = useState(null);
   const [recentSearches, setRecentSearches] = useState([]);
   const [data, setData] = useRecoilState(SearchAtom);
   const [recommemdData, setRecommendData] = useState(null);
+  const [result, setResult] = useState(null);
 
   // 검색어 입력 변경을 처리하는 함수
   const handleSearchInputChange = (text) => {
@@ -24,6 +26,7 @@ export default function SearchPage() {
 
   const handleDeleteSearchKeyword = () => {
     setSearchKeyword(null);
+    setResult(null);
   };
   const recommendPress = (keyword) => {
     setSearchKeyword(keyword);
@@ -32,6 +35,7 @@ export default function SearchPage() {
       ...prev,
       input: keyword,
     }));
+    fetchResult(keyword);
   };
 
   // 추천검색어 클릭 함수
@@ -62,9 +66,9 @@ export default function SearchPage() {
         if (updatedSearches.length > 30) {
           updatedSearches.splice(30);
         }
-
         return updatedSearches;
       });
+      fetchResult(searchKeyword);
     }
   };
 
@@ -87,11 +91,25 @@ export default function SearchPage() {
         )
       );
     };
-
     // 10분마다 만료된 검색어 제거 함수를 호출
     const interval = setInterval(removeExpiredSearches, 600000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchResult = async (keyword) => {
+    try {
+      const response = await axios.get(
+        `https://0x057hq0se.execute-api.ap-northeast-2.amazonaws.com/api/v1/search/nails?input=${keyword}`,
+        {
+          headers: { "Content-Type": `application/json` },
+        }
+      );
+      console.log("fetchResult:", response.data);
+      setResult(response.data);
+    } catch (error) {
+      console.error("fetchResult-Error:", error);
+    }
+  };
 
   const fetchRecommend = async () => {
     try {
@@ -117,7 +135,9 @@ export default function SearchPage() {
   return (
     <SafeAreaView>
       <SearchBar>
-        <Ionicons name="arrow-back" size={22} color="black" />
+        <BackButton onPress={handleDeleteSearchKeyword}>
+          <Ionicons name="arrow-back" size={22} color="black" />
+        </BackButton>
         <DeleteButton onPress={handleDeleteSearchKeyword}>
           <Ionicons name="close-circle-outline" size={22} color="black" />
         </DeleteButton>
@@ -126,11 +146,13 @@ export default function SearchPage() {
           value={searchKeyword}
           onChangeText={handleSearchInputChange}
         />
-        <SearchButton onPress={handleSearch}>
+        <SearchButton onPress={handleSearch} disabled={!searchKeyword}>
           <Ionicons name="search" size={22} color="black" />
         </SearchButton>
       </SearchBar>
-      {searchKeyword ? (
+      {result ? (
+        <Result result={result.data.nails} />
+      ) : searchKeyword ? (
         <Recommend
           searchKeyword={searchKeyword}
           recommemdData={recommemdData}
@@ -171,6 +193,7 @@ const Search = styled.TextInput`
   padding-horizontal: 10px;
   margin-left: 10px;
 `;
+const BackButton = styled.TouchableOpacity``;
 const DeleteButton = styled.TouchableOpacity`
   position: absolute;
   margin-left: 10px;
