@@ -20,6 +20,13 @@ export default function Recommend({
       return <React.Fragment key={index}>{char}</React.Fragment>;
     });
   };
+  //   const Crosshatch=(keyword)=>{
+  //     const chars = keyword.split("");
+  //     return (
+  //         <Crosshatch>#</Crosshatch>
+  //         highlightMatchingChars(chars.slice(1,));
+  //     );
+  //   }
   const handleItem = (keyword) => {
     recommendPress(keyword);
     console.log("눌림", keyword);
@@ -42,7 +49,8 @@ export default function Recommend({
         recommemdData.hashtags.slice(0, 3).map((data, id) => (
           <Item key={id} onPress={() => handleItem(data.keyword)}>
             <Wrapper>
-              <Title>{highlightMatchingChars(data.keyword)}</Title>
+              <Crosshatch>#</Crosshatch>
+              <Title>{highlightMatchingChars(data.keyword.slice(1))}</Title>
             </Wrapper>
             <SubTitle>해시태그</SubTitle>
           </Item>
@@ -70,9 +78,13 @@ const Image = styled.Image`
   width: 35px;
   height: 35px;
   border-radius: 50px;
+  margin-right: 10px;
 `;
 const Crosshatch = styled.Text`
   font-size: 20px;
+  margin-right: 10px;
+  color: gray;
+  font-weight: 700;
 `;
 const Title = styled.Text``;
 const SubTitle = styled.Text``;

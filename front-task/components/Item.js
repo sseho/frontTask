@@ -44,6 +44,16 @@ const InfoContainer = styled.View`
   align-items: center;
   justify-content: space-between;
 `;
-const Info = styled.View``;
-const Title = styled.Text``;
-const Location = styled.Text``;
+const Info = styled.View`
+  justify-content: center;
+  height: 34px;
+`;
+const Title = styled.Text`
+  font-size: 13px;
+  font-weight: 600;
+`;
+const Location = styled.Text`
+  font-size: 11px;
+  font-weight: 400;
+  color: darkgray;
+`;
