@@ -2,11 +2,10 @@ import { FlatList, Text } from "react-native";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { LikeAtom } from "../recoil/SearchAtom";
+import { LikeAtom } from "../recoil/Atom";
 import { useRecoilState } from "recoil";
 
 export default function Items({ item }) {
-  const [selected, setSelected] = useState(false);
   const [like, setLike] = useRecoilState(LikeAtom);
   const likePress = (nail_id) => {
     if (like.includes(nail_id)) {
@@ -15,7 +14,6 @@ export default function Items({ item }) {
     } else {
       setLike([...like, nail_id]);
     }
-    // setSelected(!selected);
   };
   return (
     <Item key={item.nail_id}>
