@@ -11,19 +11,14 @@ import Result from "../components/Result";
 export default function SearchPage() {
   const [searchKeyword, setSearchKeyword] = useState(null); //입력어
   const [recentSearches, setRecentSearches] = useState([]); //최근검색어
-  const [data, setData] = useRecoilState(SearchAtom); //fetch 추천검색어 할때 보내는 데이터
   const [recommemdData, setRecommendData] = useState(null); //추천검색어
   const [result, setResult] = useState(null); //검색 결과 데이터
 
   // 검색어 입력 변경을 처리하는 함수
   const handleSearchInputChange = (text) => {
     setSearchKeyword(text);
-    setData((prev) => ({
-      ...prev,
-      input: text,
-    }));
   };
-  // 뒤로가기 x 클릭시 동작
+  // 뒤로가기, x 클릭시 동작
   const handleDeleteSearchKeyword = () => {
     setSearchKeyword(null);
     setResult(null);
@@ -66,9 +61,6 @@ export default function SearchPage() {
       fetchResult(searchKeyword);
     }
   };
-  // if(recentSearches.includes(searchKeyword)){
-  //   recentSearches.splice(searchKeyword, 1);
-  // }
   // 최근 검색어 삭제 버튼 클릭을 처리하는 함수
   const handleClearRecentSearch = (index) => {
     setRecentSearches((prevSearches) => {
@@ -92,7 +84,7 @@ export default function SearchPage() {
     const interval = setInterval(removeExpiredSearches, 1000);
     return () => clearInterval(interval);
   }, []);
-
+  // 검색결과 fetch
   const fetchResult = async (keyword) => {
     try {
       const response = await axios.get(
@@ -107,13 +99,13 @@ export default function SearchPage() {
       console.error("fetchResult-Error:", error);
     }
   };
-
+  // 추천검색어 fetch
   const fetchRecommend = async () => {
     try {
       const response = await axios.get(
-        `https://0x057hq0se.execute-api.ap-northeast-2.amazonaws.com/api/v1/search`,
+        `https://0x057hq0se.execute-api.ap-northeast-2.amazonaws.com/api/v1/search?input=${searchKeyword}`,
         {
-          params: data,
+          // params: data,
           headers: { "Content-Type": `application/json` },
         }
       );
@@ -127,7 +119,7 @@ export default function SearchPage() {
     if (searchKeyword) {
       fetchRecommend();
     }
-  }, [data]);
+  }, [searchKeyword]);
 
   return (
     <SafeAreaView>
