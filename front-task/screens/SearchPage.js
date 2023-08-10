@@ -118,6 +118,7 @@ export default function SearchPage() {
   useEffect(() => {
     if (searchKeyword) {
       fetchRecommend();
+      setResult(null);
     }
   }, [searchKeyword]);
 
