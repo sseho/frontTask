@@ -6,3 +6,8 @@ export const SearchAtom = atom({
     input: null,
   },
 });
+
+export const LikeAtom = atom({
+  key: "LikeAtom",
+  default: [],
+});

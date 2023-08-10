@@ -2,11 +2,20 @@ import { FlatList, Text } from "react-native";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import { LikeAtom } from "../recoil/SearchAtom";
+import { useRecoilState } from "recoil";
 
 export default function Items({ item }) {
   const [selected, setSelected] = useState(false);
-  const likePress = () => {
-    setSelected(!selected);
+  const [like, setLike] = useRecoilState(LikeAtom);
+  const likePress = (nail_id) => {
+    if (like.includes(nail_id)) {
+      const updatedList = like.filter((id) => id !== nail_id);
+      setLike(updatedList);
+    } else {
+      setLike([...like, nail_id]);
+    }
+    // setSelected(!selected);
   };
   return (
     <Item key={item.nail_id}>
@@ -16,8 +25,8 @@ export default function Items({ item }) {
           <Title>{item.shop.name}</Title>
           <Location>{item.shop.location}</Location>
         </Info>
-        <ImageContainer onPress={likePress}>
-          {selected ? (
+        <ImageContainer onPress={() => likePress(item.nail_id)}>
+          {like.includes(item.nail_id) ? (
             <Ionicons name="heart" size={22} color="red" />
           ) : (
             <Ionicons name="heart-outline" size={22} color="red" />
