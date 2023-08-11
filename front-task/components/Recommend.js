@@ -89,6 +89,5 @@ const Crosshatch = styled.Text`
 const Title = styled.Text``;
 const SubTitle = styled.Text``;
 const HighlightedChar = styled.Text`
-  /* 하이라이트 스타일을 여기에 적용합니다. */
-  color: red; /* 예를 들어, 글자 색을 빨간색으로 변경합니다. */
+  color: red;
 `;
